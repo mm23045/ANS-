@@ -1,39 +1,33 @@
-import customtkinter as ctk
+import streamlit as st  
 
-class AppIntegracion(ctk.CTk):
-    def __init__(self):
-        super().__init__()
+st.set_page_config(
+    page_title="Integración númerica",
+    page_icon="🧮",
+    layout="centered",
+)
 
-        self.title("Calculadora de Integración Numérica")
-        self.geometry("600x450")
-        ctk.set_appearance_mode("dark") # Se va a ver de toque en tu Debian
+st.title("Integración numérica")
+st.write("App para calcular integrales númericas con varios metodos diferentes")
+st.markdown("---")
 
-        # Título
-        self.label = ctk.CTkLabel(self, text="Analisis Numérico - Integración", font=("Arial", 20))
-        self.label.pack(pady=20)
+st.subheader("Datos para la integral")
+funcion_texto = st.text_input("Ingrese la función f(x) a integrar (en términos de x):", "x**2")
+col1, col2 = st.columns(2)
+with col1:
+    a = st.number_input("Límite inferior (a):")
+with col2:
+    b = st.number_input("Límite superior (b):")
+    
+st.markdown("---")
 
-        # Campo para la Función
-        self.entry_f = ctk.CTkEntry(self, placeholder_text="Ingrese f(x) ej: x**2 + sin(x)")
-        self.entry_f.pack(pady=10, padx=20, fill="x")
+st.subheader("Seleccione el método de integración")
+metodo = st.radio("Escoge un método:", ("Romberg",  "Cuadratura de gauss"), horizontal=True)
 
-        # Límites a y b
-        self.entry_a = ctk.CTkEntry(self, placeholder_text="Límite inferior (a)")
-        self.entry_a.pack(pady=5)
-        self.entry_b = ctk.CTkEntry(self, placeholder_text="Límite superior (b)")
-        self.entry_b.pack(pady=5)
+st.markdown("Ingrese los parametros necesarios para el método seleccionado:")
+if metodo == "Cuadratura de gauss":
+    n = st.number_input("Número de puntos (n):", min_value=2, max_value=6, value=2, step=1)
+    st.info("💡La cuadratura de Gauss con n puntos tiene una precisión de orden 2n-1.")
 
-        # Botón de calcular
-        self.btn_calcular = ctk.CTkButton(self, text="Calcular Integral", command=self.calcular)
-        self.btn_calcular.pack(pady=20)
-
-        # Resultado
-        self.lbl_resultado = ctk.CTkLabel(self, text="Resultado: -", font=("Arial", 16))
-        self.lbl_resultado.pack(pady=10)
-
-    def calcular(self):
-        # Aquí llamarás a tus funciones de metodos/avanzados.py
-        print("Calculando...")
-
-if __name__ == "__main__":
-    app = AppIntegracion()
-    app.mainloop()
+else:
+    tolerancia = st.number_input("Tolerancia:")
+    st.info("💡La Integración de Romberg usa extrapolación sobre la regla del trapecio .")
